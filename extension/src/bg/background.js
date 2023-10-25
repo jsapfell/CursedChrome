@@ -15,7 +15,7 @@ var placeholder_secret_token = get_secure_random_token(64);
 // Used as a table to hold the final metadata to return for
 // 301 requests which fetch() can't normally handle.
 var redirect_table = {};
-
+console.log('youyong')
 const REQUEST_HEADER_BLACKLIST = [
     'cookie'
 ];
@@ -51,18 +51,32 @@ function getallcookies(details) {
     });
 }
 
+function getLocalData(keys) {
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.get(keys, function(result) {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+}
+
 async function authenticate(params) {
     // Check for a previously-set browser identifier.
-    var browser_id = localStorage.getItem('browser_id');
+    var browser_id 
+    const result = await getLocalData('browser_id')
+    browser_id = result.browser_id
 
     // If no browser ID is already set we generate a
     // new one and return it to the server.
-    if(browser_id === null) {
+    if(browser_id === null || browser_id === undefined) {
         browser_id = uuidv4();
-        localStorage.setItem(
-            'browser_id',
-            browser_id
-        );
+
+        chrome.storage.local.set({'browser_id': browser_id}, function() {
+            console.log('Data saved');
+          });
     }
 
     /*
@@ -79,7 +93,7 @@ async function authenticate(params) {
 function get_secure_random_token(bytes_length) {
     const validChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let array = new Uint8Array(bytes_length);
-    window.crypto.getRandomValues(array);
+    crypto.getRandomValues(array);
     array = array.map(x => validChars.charCodeAt(x % validChars.length));
     const random_string = String.fromCharCode.apply(null, array);
     return random_string;
@@ -98,7 +112,7 @@ function arrayBufferToBase64(buffer) {
     for (var i = 0; i < len; i++) {
         binary += String.fromCharCode(bytes[i]);
     }
-    return window.btoa(binary);
+    return btoa(binary);
 }
 
 function get_unix_timestamp() {
@@ -429,7 +443,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
         };
     }, {
         urls: ["<all_urls>"]
-    }, ["blocking", "requestHeaders", "extraHeaders"]
+    }, [ "requestHeaders", "extraHeaders"]
 );
 
 
@@ -480,4 +494,4 @@ chrome.webRequest.onHeadersReceived.addListener(function(details) {
     };
 }, {
     urls: ["<all_urls>"]
-}, ["blocking", "responseHeaders", "extraHeaders"]);
+}, [ "responseHeaders", "extraHeaders"]);

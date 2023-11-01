@@ -305,7 +305,7 @@ const options = {
                 requestDetail.requestData.length > 0
             ) ? requestDetail.requestData.toString('base64') : false;
 
-            logit(`[${auth_details.id}][${auth_details.name}] Proxying request ${requestDetail._req.method} ${requestDetail.url}`);
+            //logit(`[${auth_details.id}][${auth_details.name}] Proxying request ${requestDetail._req.method} ${requestDetail.url}`);
             const response = await send_request_via_browser(
                 auth_details.browser_id,
                 true,
@@ -330,10 +330,10 @@ const options = {
                 };
             }
 
-            logit(`[${auth_details.id}][${auth_details.name}] Got response ${response.status} ${requestDetail.url}`);
+            //logit(`[${auth_details.id}][${auth_details.name}] Got response ${response.status} ${requestDetail.url}`);
 
             let encoded_body_buffer = new Buffer(response.body, 'base64');
-            let decoded_body = encoded_body_buffer.toString('ascii');
+            //let decoded_body = encoded_body_buffer.toString('ascii');
 
             if ('content-encoding' in response.headers) {
                 delete response.headers['content-encoding'];

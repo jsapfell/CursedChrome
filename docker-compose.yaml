@@ -27,6 +27,6 @@ services:
       # storing admin panel passwords.
       BCRYPT_ROUNDS: 10
     ports:
-      - "127.0.0.1:8080:8080" # Proxy server
-      - "127.0.0.1:4343:4343" # WebSocket server (talks with implants)
-      - "127.0.0.1:8118:8118" # Web panel
+      - "8080:8080" # Proxy server
+      - "4343:4343" # WebSocket server (talks with implants)
+      - "8118:8118" # Web panel
